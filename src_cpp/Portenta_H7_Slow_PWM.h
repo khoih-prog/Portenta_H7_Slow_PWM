@@ -47,10 +47,6 @@
   #define PORTENTA_H7_SLOW_PWM_VERSION       "PORTENTA_H7_SLOW_PWM v1.0.0"
 #endif
 
-#ifndef TIMER_INTERRUPT_DEBUG
-  #define TIMER_INTERRUPT_DEBUG      0
-#endif
-
 ///////////////////////////////////////////
 
 #include "stm32/HardwareTimer.h"
