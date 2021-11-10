@@ -31,14 +31,18 @@
     * [1.1 Init Hardware Timer](#11-init-hardware-timer)
     * [1.2 Set PWM Frequency, dutycycle, attach irqCallbackStartFunc and irqCallbackStopFunc functions](#12-Set-PWM-Frequency-dutycycle-attach-irqCallbackStartFunc-and-irqCallbackStopFunc-functions)
 * [Examples](#examples)
-  * [  1. ISR_16_PWMs_Array](examples/ISR_16_PWMs_Array)
-  * [  2. ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex)
-  * [  3. ISR_16_PWMs_Array_Simple](examples/ISR_16_PWMs_Array_Simple)
+  * [ 1. ISR_16_PWMs_Array](examples/ISR_16_PWMs_Array)
+  * [ 2. ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex)
+  * [ 3. ISR_16_PWMs_Array_Simple](examples/ISR_16_PWMs_Array_Simple)
+  * [ 4. ISR_Changing_PWM](examples/ISR_Changing_PWM)
+  * [ 5. ISR_Modify_PWM](examples/ISR_Modify_PWM)
 * [Example ISR_16_PWMs_Array_Complex](#Example-ISR_16_PWMs_Array_Complex)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7](#1-ISR_16_PWMs_Array_Complex-on-PORTENTA_H7_M7)
   * [2. ISR_16_PWMs_Array on PORTENTA_H7_M7](#2-ISR_16_PWMs_Array-on-PORTENTA_H7_M7)
   * [3. ISR_16_PWMs_Array_Simple on PORTENTA_H7_M7](#3-ISR_16_PWMs_Array_Simple-on-PORTENTA_H7_M7)
+  * [4. ISR_Modify_PWM on PORTENTA_H7_M7](#4-ISR_Modify_PWM-on-PORTENTA_H7_M7)
+  * [5. ISR_Changing_PWM on PORTENTA_H7_M7](#5-ISR_Changing_PWM-on-PORTENTA_H7_M7)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Issues](#issues)
@@ -56,7 +60,7 @@
 
 ### Features
 
-This library enables you to use Hardware Timers on an STM32H7-based Portenta_H7 board to create and output PWM to pins. Because this library doesn't use the powerful hardware-controlled PWM with limitations, the maximum PWM frequency is currently limited at **1000Hz**, which is suitable for many real-life applications.
+This library enables you to use Hardware Timers on an STM32H7-based Portenta_H7 board to create and output PWM to pins. Because this library doesn't use the powerful hardware-controlled PWM with limitations, the maximum PWM frequency is currently limited at **1000Hz**, which is suitable for many real-life applications. Now you can also modify PWM settings on-the-fly.
 
 ---
 
@@ -117,7 +121,7 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.16+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`ArduinoCore-mbed mbed_portenta core 2.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+ 2. [`ArduinoCore-mbed mbed_portenta core 2.5.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 
  3. To use with certain example
    - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) for [ISR_16_Timers_Array example](examples/ISR_16_Timers_Array).
@@ -154,12 +158,12 @@ Another way to install is to:
 
 #### 1. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.4.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.4.1/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.4.1
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -172,9 +176,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.4.1. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 2.5.2. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.4.1/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -395,6 +399,8 @@ void setup()
  1. [ISR_16_PWMs_Array](examples/ISR_16_PWMs_Array)
  2. [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex)
  3. [ISR_16_PWMs_Array_Simple](examples/ISR_16_PWMs_Array_Simple) 
+ 4. [ISR_Changing_PWM](examples/ISR_Changing_PWM)
+ 5. [ISR_Modify_PWM](examples/ISR_Modify_PWM)
 
  
 ---
@@ -541,12 +547,11 @@ uint32_t PWM_Period[NUMBER_ISR_PWMS] =
    111111L,   100000L,    66667L,    50000L,    40000L,   33333L,     25000L,    20000L
 };
 
-
 // You can assign any interval for any timer here, in Hz
-uint32_t PWM_Freq[NUMBER_ISR_PWMS] =
+double PWM_Freq[NUMBER_ISR_PWMS] =
 {
-  1,  2,  3,  4,  5,  6,  7,  8,
-  9, 10, 15, 20, 25, 30, 40, 50
+  1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
+  9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
 };
 
 // You can assign any interval for any timer here, in milliseconds
@@ -984,7 +989,7 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.0.0
+PORTENTA_H7_SLOW_PWM v1.1.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 1000000.00 , _count = 20
 Starting ITimer OK, micros() = 3391815
@@ -1048,7 +1053,7 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.0.0
+PORTENTA_H7_SLOW_PWM v1.1.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 1000000.00 , _count = 20
 Starting ITimer OK, micros() = 3389445
@@ -1078,7 +1083,7 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array_Simple on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.0.0
+PORTENTA_H7_SLOW_PWM v1.1.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 1000000.00 , _count = 20
 Starting ITimer OK, micros() = 3190279
@@ -1100,6 +1105,41 @@ Channel : 14	Period : 25000		OnTime : 22500	Start_Time : 3190490
 Channel : 15	Period : 20000		OnTime : 19000	Start_Time : 3190490
 ```
 
+---
+
+### 4. ISR_Modify_PWM on PORTENTA_H7_M7
+
+The following is the sample terminal output when running example [ISR_Modify_PWM](examples/ISR_Modify_PWM) on **PORTENTA_H7_M7** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
+
+```
+Starting ISR_Modify_PWM on PORTENTA_H7_M7
+PORTENTA_H7_SLOW_PWM v1.1.0
+[PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
+[PWM] Frequency = 1000000.00 , _count = 10
+Starting ITimer OK, micros() = 2891680
+Using PWM Freq = 1.00, PWM DutyCycle = 10
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 2891942
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12823999
+Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 22757370
+```
+
+---
+
+### 5. ISR_Changing_PWM on PORTENTA_H7_M7
+
+The following is the sample terminal output when running example [ISR_Changing_PWM](examples/ISR_Changing_PWM) on **PORTENTA_H7_M7** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
+
+```
+Starting ISR_Changing_PWM on PORTENTA_H7_M7
+PORTENTA_H7_SLOW_PWM v1.1.0
+[PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
+[PWM] Frequency = 1000000.00 , _count = 10
+Starting ITimer OK, micros() = 2755082
+Using PWM Freq = 1.00, PWM DutyCycle = 50
+Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2755333
+Using PWM Freq = 2.00, PWM DutyCycle = 90
+Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12685273
+```
 
 ---
 ---
@@ -1136,7 +1176,6 @@ Submit issues to: [Portenta_H7_Slow_PWM issues](https://github.com/khoih-prog/Po
 ## TO DO
 
 1. Search for bug and improvement.
-2. Similar features for remaining Arduino boards
 
 ---
 
@@ -1144,6 +1183,7 @@ Submit issues to: [Portenta_H7_Slow_PWM issues](https://github.com/khoih-prog/Po
 
 1. Basic hardware multi-channel PWM for **Portenta_H7**.
 2. Add Table of Contents
+3. Add functions to modify PWM settings on-the-fly
 
 ---
 ---

@@ -1,8 +1,8 @@
 {
   "name": "Portenta_H7_Slow_PWM",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "keywords": "timing, device, control, timer, pwm, interrupt, isr, isr-based, synchronized-PWM, mission-critical, accuracy, non-blocking, mbed, mbed-portenta, portenta-h7, portentah7, portenta-h7-m7, portenta-h7-m4, portentah7-m7, portentah7-m4, stm32h7, stm32, hardware-timer, precise, hardware",
-  "description": "This library enables you to use Hardware Timers on an STM32H7-based Portenta_H7 board to create and output PWM to pins. It now supports 16 ISR-based PWM-channels, while consuming only 1 Hardware Timer. They are much more precise (certainly depending on clock frequency accuracy) than other software PWM using millis() or micros(). That's mandatory if you need to use in applications requiring better accuracy. PWM-channel interval can very long (ulong millisecs). The most important feature is they're ISR-based PWM-channels. Therefore, their executions are not blocked by bad-behaving functions or tasks. This important feature is absolutely necessary for mission-critical tasks. These hardware PWM channels, using interrupt, still work even if other functions are blocking. Max PWM frequency is limited at 1000Hz",
+  "description": "This library enables you to use Hardware Timers on an STM32H7-based Portenta_H7 board to create and output PWM to pins. It now supports 16 ISR-based PWM-channels, while consuming only 1 Hardware Timer. They are much more precise (certainly depending on clock frequency accuracy) than other software PWM using millis() or micros(). That's mandatory if you need to use in applications requiring better accuracy. PWM-channel interval can very long (ulong millisecs). The most important feature is they're ISR-based PWM-channels. Therefore, their executions are not blocked by bad-behaving functions or tasks. This important feature is absolutely necessary for mission-critical tasks. These hardware PWM channels, using interrupt, still work even if other functions are blocking. Max PWM frequency is limited at 1000Hz. Now you can change the PWM settings on-the-fly",
   "authors":
   {
     "name":  "Khoi Hoang",
