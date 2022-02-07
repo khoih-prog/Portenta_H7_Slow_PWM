@@ -27,6 +27,7 @@
   * [VS Code & PlatformIO](#vs-code--platformio)
 * [Packages' Patches](#packages-patches)
   * [1. For Portenta_H7 boards using Arduino IDE in Linux](#1-for-portenta_h7-boards-using-arduino-ide-in-linux)
+* [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error) 
 * [More useful Information about STM32 Timers](#more-useful-information-about-stm32-timers)
 * [Available Timers for Portenta_H7](#available-timers-for-portenta_h7)
 * [Usage](#usage)
