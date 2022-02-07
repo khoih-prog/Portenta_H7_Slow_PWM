@@ -13,6 +13,7 @@
 
 ## Table of Contents
 
+* [Important Change from v1.2.0](#Important-Change-from-v120)
 * [Why do we need this Portenta_H7_Slow_PWM library](#why-do-we-need-this-Portenta_H7_Slow_PWM-library)
   * [Features](#features)
   * [Why using ISR-based PWM is better](#why-using-isr-based-pwm-is-better)
@@ -38,6 +39,7 @@
   * [ 3. ISR_16_PWMs_Array_Simple](examples/ISR_16_PWMs_Array_Simple)
   * [ 4. ISR_Changing_PWM](examples/ISR_Changing_PWM)
   * [ 5. ISR_Modify_PWM](examples/ISR_Modify_PWM)
+  * [ 6. multiFileProject](examples/multiFileProject). **New**
 * [Example ISR_16_PWMs_Array_Complex](#Example-ISR_16_PWMs_Array_Complex)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7](#1-ISR_16_PWMs_Array_Complex-on-PORTENTA_H7_M7)
@@ -57,6 +59,24 @@
 
 ---
 ---
+
+
+### Important Change from v1.2.0
+
+Please have a look at [HOWTO Fix `Multiple Definitions` Linker Error](#howto-fix-multiple-definitions-linker-error)
+
+As more complex calculation and check **inside ISR** are introduced from v1.2.0, there is possibly some crash depending on use-case.
+
+You can modify to use larger `HW_TIMER_INTERVAL_US`, (from current 10uS), according to your board and use-case if crash happens.
+
+
+```
+// Don't change these numbers to make higher Timer freq. System can hang
+#define HW_TIMER_INTERVAL_US      10L
+```
+
+---
+
 
 ### Why do we need this [Portenta_H7_Slow_PWM library](https://github.com/khoih-prog/Portenta_H7_Slow_PWM)
 
@@ -160,12 +180,12 @@ Another way to install is to:
 
 #### 1. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -178,9 +198,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.5.2. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 2.6.1. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.5.2/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -188,6 +208,31 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/mbed_portenta/x.yy.zz/portenta_post_install.sh`
 
+
+---
+---
+
+### HOWTO Fix `Multiple Definitions` Linker Error
+
+The current library implementation, using `xyz-Impl.h` instead of standard `xyz.cpp`, possibly creates certain `Multiple Definitions` Linker error in certain use cases.
+
+You can include this `.hpp` file
+
+```
+// Can be included as many times as necessary, without `Multiple Definitions` Linker Error
+#include "Portenta_H7_Slow_PWM.hpp"     //https://github.com/khoih-prog/Portenta_H7_Slow_PWM
+```
+
+in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
+
+```
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
+#include "Portenta_H7_Slow_PWM.h"           //https://github.com/khoih-prog/Portenta_H7_Slow_PWM
+```
+
+Check the new [**multiFileProject** example](examples/multiFileProject) for a `HOWTO` demo.
+
+Have a look at the discussion in [Different behaviour using the src_cpp or src_h lib #80](https://github.com/khoih-prog/ESPAsync_WiFiManager/discussions/80)
 
 ---
 ---
@@ -403,6 +448,7 @@ void setup()
  3. [ISR_16_PWMs_Array_Simple](examples/ISR_16_PWMs_Array_Simple) 
  4. [ISR_Changing_PWM](examples/ISR_Changing_PWM)
  5. [ISR_Modify_PWM](examples/ISR_Modify_PWM)
+ 6. [**multiFileProject**](examples/multiFileProject) **New**
 
  
 ---
@@ -422,6 +468,7 @@ void setup()
 
 #define USING_MICROS_RESOLUTION       true    //false 
 
+// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "Portenta_H7_Slow_PWM.h"
 
 #include <SimpleTimer.h>              // https://github.com/jfturcot/SimpleTimer
@@ -504,12 +551,12 @@ typedef struct
   irqCallback   irqCallbackStopFunc;
 
 #if USING_PWM_FREQUENCY  
-  uint32_t      PWM_Freq;
+  float         PWM_Freq;
 #else  
   uint32_t      PWM_Period;
 #endif
   
-  uint32_t      PWM_DutyCycle;
+  float         PWM_DutyCycle;
   
   uint64_t      deltaMicrosStart;
   uint64_t      previousMicrosStart;
@@ -529,38 +576,38 @@ void doingSomethingStop(int index);
 
 #else   // #if USE_COMPLEX_STRUCT
 
-volatile unsigned long deltaMicrosStart    [NUMBER_ISR_PWMS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStart [NUMBER_ISR_PWMS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long deltaMicrosStart    [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long previousMicrosStart [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-volatile unsigned long deltaMicrosStop     [NUMBER_ISR_PWMS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStop  [NUMBER_ISR_PWMS] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long deltaMicrosStop     [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+volatile unsigned long previousMicrosStop  [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 // You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
-uint32_t PWM_Pin[NUMBER_ISR_PWMS] =
+uint32_t PWM_Pin[] =
 {
       LEDG,   LEDB,   LEDR, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
    PIN_D5,  PIN_D6, PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
 };
 
 // You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period[NUMBER_ISR_PWMS] =
+uint32_t PWM_Period[] =
 {
   1000000L,   500000L,   333333L,   250000L,   200000L,   166667L,   142857L,   125000L,
    111111L,   100000L,    66667L,    50000L,    40000L,   33333L,     25000L,    20000L
 };
 
 // You can assign any interval for any timer here, in Hz
-double PWM_Freq[NUMBER_ISR_PWMS] =
+float PWM_Freq[] =
 {
   1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
   9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
 };
 
 // You can assign any interval for any timer here, in milliseconds
-uint32_t PWM_DutyCycle[NUMBER_ISR_PWMS] =
+float PWM_DutyCycle[] =
 {
-   5, 10, 20, 30, 40, 45, 50, 55,
-  60, 65, 70, 75, 80, 85, 90, 95
+   5.0, 10.0, 20.0, 30.0, 40.0, 45.0, 50.0, 55.0,
+  60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0
 };
 
 void doingSomethingStart(int index)
@@ -754,7 +801,7 @@ void doingSomethingStop15()
 
   #if USING_PWM_FREQUENCY
   
-  ISR_PWM_Data curISR_PWM_Data[NUMBER_ISR_PWMS] =
+  ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Freq, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
     { LEDG,         doingSomethingStart0,    doingSomethingStop0,    1,   5, 0, 0, 0, 0 },
@@ -777,7 +824,7 @@ void doingSomethingStop15()
   
   #else   // #if USING_PWM_FREQUENCY
   
-  ISR_PWM_Data curISR_PWM_Data[NUMBER_ISR_PWMS] =
+  ISR_PWM_Data curISR_PWM_Data[] =
   {
     // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
     { LEDG,         doingSomethingStart0,     doingSomethingStop0,   1000000L,  5, 0, 0, 0, 0 },
@@ -820,7 +867,7 @@ void doingSomethingStop(int index)
 
 #else   // #if USE_COMPLEX_STRUCT
 
-irqCallback irqCallbackStartFunc[NUMBER_ISR_PWMS] =
+irqCallback irqCallbackStartFunc[] =
 {
   doingSomethingStart0,  doingSomethingStart1,  doingSomethingStart2,  doingSomethingStart3,
   doingSomethingStart4,  doingSomethingStart5,  doingSomethingStart6,  doingSomethingStart7,
@@ -828,7 +875,7 @@ irqCallback irqCallbackStartFunc[NUMBER_ISR_PWMS] =
   doingSomethingStart12, doingSomethingStart13, doingSomethingStart14, doingSomethingStart15
 };
 
-irqCallback irqCallbackStopFunc[NUMBER_ISR_PWMS] =
+irqCallback irqCallbackStopFunc[] =
 {
   doingSomethingStop0,  doingSomethingStop1,  doingSomethingStop2,  doingSomethingStop3,
   doingSomethingStop4,  doingSomethingStop5,  doingSomethingStop6,  doingSomethingStop7,
@@ -933,7 +980,7 @@ void setup()
     curISR_PWM_Data[i].previousMicrosStart = startMicros;
     //ISR_PWM.setInterval(curISR_PWM_Data[i].PWM_Period, curISR_PWM_Data[i].irqCallbackStartFunc);
 
-    //void setPWM(uint32_t pin, uint32_t frequency, uint32_t dutycycle
+    //void setPWM(uint32_t pin, float frequency, float dutycycle
     // , timer_callback_p StartCallback = nullptr, timer_callback_p StopCallback = nullptr)
 
   #if USING_PWM_FREQUENCY
@@ -991,60 +1038,60 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.1.0
+Portenta_H7_Slow_PWM v1.2.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
-[PWM] Frequency = 1000000.00 , _count = 20
-Starting ITimer OK, micros() = 3391815
-Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 3392013
-Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 3392013
-Channel : 2	Period : 333333		OnTime : 66666	Start_Time : 3392013
-Channel : 3	Period : 250000		OnTime : 75000	Start_Time : 3392013
-Channel : 4	Period : 200000		OnTime : 80000	Start_Time : 3392013
-Channel : 5	Period : 166667		OnTime : 75000	Start_Time : 3392013
-Channel : 6	Period : 142857		OnTime : 71428	Start_Time : 3392013
-Channel : 7	Period : 125000		OnTime : 68750	Start_Time : 3392013
-Channel : 8	Period : 111111		OnTime : 66666	Start_Time : 3392013
-Channel : 9	Period : 100000		OnTime : 65000	Start_Time : 3392013
-Channel : 10	Period : 66667		OnTime : 46666	Start_Time : 3392013
-Channel : 11	Period : 50000		OnTime : 37500	Start_Time : 3392013
-Channel : 12	Period : 40000		OnTime : 32000	Start_Time : 3392013
-Channel : 13	Period : 33333		OnTime : 28333	Start_Time : 3392013
-Channel : 14	Period : 25000		OnTime : 22500	Start_Time : 3392013
-Channel : 15	Period : 20000		OnTime : 19000	Start_Time : 3392013
-SimpleTimer (ms): 2000, us : 13335232, Dus : 9943221
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 500000, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333, actual : 333340, programmed DutyCycle : 20, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000, actual : 250000, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000, actual : 200000, programmed DutyCycle : 40, actual : 39.99
-PWM Channel : 5, programmed Period (us): 166667, actual : 166680, programmed DutyCycle : 45, actual : 44.99
-PWM Channel : 6, programmed Period (us): 142857, actual : 142860, programmed DutyCycle : 50, actual : 49.99
-PWM Channel : 7, programmed Period (us): 125000, actual : 124998, programmed DutyCycle : 55, actual : 55.00
-PWM Channel : 8, programmed Period (us): 111111, actual : 111120, programmed DutyCycle : 60, actual : 59.99
-PWM Channel : 9, programmed Period (us): 100000, actual : 100000, programmed DutyCycle : 65, actual : 65.00
-PWM Channel : 10, programmed Period (us): 66667, actual : 66680, programmed DutyCycle : 70, actual : 69.98
-PWM Channel : 11, programmed Period (us): 50000, actual : 50001, programmed DutyCycle : 75, actual : 75.00
-PWM Channel : 12, programmed Period (us): 40000, actual : 40001, programmed DutyCycle : 80, actual : 80.00
-PWM Channel : 13, programmed Period (us): 33333, actual : 33341, programmed DutyCycle : 85, actual : 84.94
-PWM Channel : 14, programmed Period (us): 25000, actual : 25000, programmed DutyCycle : 90, actual : 89.91
-PWM Channel : 15, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 95, actual : 95.00
-SimpleTimer (ms): 2000, us : 23279451, Dus : 9944219
-PWM Channel : 0, programmed Period (us): 1000000, actual : 1000000, programmed DutyCycle : 5, actual : 5.00
-PWM Channel : 1, programmed Period (us): 500000, actual : 499999, programmed DutyCycle : 10, actual : 10.00
-PWM Channel : 2, programmed Period (us): 333333, actual : 333340, programmed DutyCycle : 20, actual : 20.00
-PWM Channel : 3, programmed Period (us): 250000, actual : 250000, programmed DutyCycle : 30, actual : 30.00
-PWM Channel : 4, programmed Period (us): 200000, actual : 200000, programmed DutyCycle : 40, actual : 40.00
-PWM Channel : 5, programmed Period (us): 166667, actual : 166680, programmed DutyCycle : 45, actual : 45.00
-PWM Channel : 6, programmed Period (us): 142857, actual : 142860, programmed DutyCycle : 50, actual : 49.99
-PWM Channel : 7, programmed Period (us): 125000, actual : 125000, programmed DutyCycle : 55, actual : 54.99
-PWM Channel : 8, programmed Period (us): 111111, actual : 111135, programmed DutyCycle : 60, actual : 59.98
-PWM Channel : 9, programmed Period (us): 100000, actual : 100000, programmed DutyCycle : 65, actual : 65.00
-PWM Channel : 10, programmed Period (us): 66667, actual : 66680, programmed DutyCycle : 70, actual : 69.98
-PWM Channel : 11, programmed Period (us): 50000, actual : 50000, programmed DutyCycle : 75, actual : 74.96
-PWM Channel : 12, programmed Period (us): 40000, actual : 40000, programmed DutyCycle : 80, actual : 80.00
-PWM Channel : 13, programmed Period (us): 33333, actual : 33340, programmed DutyCycle : 85, actual : 84.94
-PWM Channel : 14, programmed Period (us): 25000, actual : 25000, programmed DutyCycle : 90, actual : 90.00
-PWM Channel : 15, programmed Period (us): 20000, actual : 20000, programmed DutyCycle : 95, actual : 95.00
+[PWM] Frequency = 100000.00 , _count = 10
+Starting ITimer OK, micros() = 2892390
+Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 2892614
+Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 2892992
+Channel : 2	    Period : 333333		OnTime : 66666	Start_Time : 2893361
+Channel : 3	    Period : 250000		OnTime : 75000	Start_Time : 2893750
+Channel : 4	    Period : 200000		OnTime : 80000	Start_Time : 2894152
+Channel : 5	    Period : 166666		OnTime : 74999	Start_Time : 2894543
+Channel : 6	    Period : 142857		OnTime : 71428	Start_Time : 2894923
+Channel : 7	    Period : 125000		OnTime : 68750	Start_Time : 2895323
+Channel : 8	    Period : 111111		OnTime : 66666	Start_Time : 2895725
+Channel : 9	    Period : 100000		OnTime : 65000	Start_Time : 2896121
+Channel : 10	    Period : 66666		OnTime : 46666	Start_Time : 2896514
+Channel : 11	    Period : 50000		OnTime : 37500	Start_Time : 2896889
+Channel : 12	    Period : 40000		OnTime : 32000	Start_Time : 2897263
+Channel : 13	    Period : 33333		OnTime : 28333	Start_Time : 2897642
+Channel : 14	    Period : 25000		OnTime : 22500	Start_Time : 2898031
+Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 2898420
+SimpleTimer (ms): 2000, us : 12822562, Dus : 9929972
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000000, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 500000, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.34, actual : 333340, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 250000, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 200000, programmed DutyCycle : 40.00, actual : 40.00
+PWM Channel : 5, programmed Period (us): 166666.67, actual : 166670, programmed DutyCycle : 45.00, actual : 44.99
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142860, programmed DutyCycle : 50.00, actual : 49.99
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 125000, programmed DutyCycle : 55.00, actual : 55.00
+PWM Channel : 8, programmed Period (us): 111111.11, actual : 111119, programmed DutyCycle : 60.00, actual : 59.99
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 100001, programmed DutyCycle : 65.00, actual : 65.00
+PWM Channel : 10, programmed Period (us): 66666.66, actual : 66670, programmed DutyCycle : 70.00, actual : 69.99
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 50000, programmed DutyCycle : 75.00, actual : 75.00
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 40000, programmed DutyCycle : 80.00, actual : 80.00
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33340, programmed DutyCycle : 85.00, actual : 84.96
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 25002, programmed DutyCycle : 90.00, actual : 89.99
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 20000, programmed DutyCycle : 95.00, actual : 95.00
+SimpleTimer (ms): 2000, us : 22756001, Dus : 9933439
+PWM Channel : 0, programmed Period (us): 1000000.00, actual : 1000000, programmed DutyCycle : 5.00, actual : 5.00
+PWM Channel : 1, programmed Period (us): 500000.00, actual : 500000, programmed DutyCycle : 10.00, actual : 10.00
+PWM Channel : 2, programmed Period (us): 333333.34, actual : 333340, programmed DutyCycle : 20.00, actual : 20.00
+PWM Channel : 3, programmed Period (us): 250000.00, actual : 250000, programmed DutyCycle : 30.00, actual : 30.00
+PWM Channel : 4, programmed Period (us): 200000.00, actual : 200000, programmed DutyCycle : 40.00, actual : 40.00
+PWM Channel : 5, programmed Period (us): 166666.67, actual : 166670, programmed DutyCycle : 45.00, actual : 44.99
+PWM Channel : 6, programmed Period (us): 142857.14, actual : 142860, programmed DutyCycle : 50.00, actual : 49.99
+PWM Channel : 7, programmed Period (us): 125000.00, actual : 124999, programmed DutyCycle : 55.00, actual : 55.00
+PWM Channel : 8, programmed Period (us): 111111.11, actual : 111120, programmed DutyCycle : 60.00, actual : 59.99
+PWM Channel : 9, programmed Period (us): 100000.00, actual : 100000, programmed DutyCycle : 65.00, actual : 65.00
+PWM Channel : 10, programmed Period (us): 66666.66, actual : 66670, programmed DutyCycle : 70.00, actual : 69.99
+PWM Channel : 11, programmed Period (us): 50000.00, actual : 50000, programmed DutyCycle : 75.00, actual : 75.00
+PWM Channel : 12, programmed Period (us): 40000.00, actual : 40000, programmed DutyCycle : 80.00, actual : 80.00
+PWM Channel : 13, programmed Period (us): 33333.33, actual : 33340, programmed DutyCycle : 85.00, actual : 85.00
+PWM Channel : 14, programmed Period (us): 25000.00, actual : 25000, programmed DutyCycle : 90.00, actual : 90.00
+PWM Channel : 15, programmed Period (us): 20000.00, actual : 20000, programmed DutyCycle : 95.00, actual : 94.95
 ```
 
 ---
@@ -1055,26 +1102,26 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.1.0
+Portenta_H7_Slow_PWM v1.2.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
-[PWM] Frequency = 1000000.00 , _count = 20
-Starting ITimer OK, micros() = 3389445
-Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 3389647
-Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 3389647
-Channel : 2	Period : 333333		OnTime : 66666	Start_Time : 3389647
-Channel : 3	Period : 250000		OnTime : 75000	Start_Time : 3389647
-Channel : 4	Period : 200000		OnTime : 80000	Start_Time : 3389647
-Channel : 5	Period : 166666		OnTime : 74999	Start_Time : 3389647
-Channel : 6	Period : 142857		OnTime : 71428	Start_Time : 3389647
-Channel : 7	Period : 125000		OnTime : 68750	Start_Time : 3389647
-Channel : 8	Period : 111111		OnTime : 66666	Start_Time : 3389647
-Channel : 9	Period : 100000		OnTime : 65000	Start_Time : 3389647
-Channel : 10	Period : 66666		OnTime : 46666	Start_Time : 3389647
-Channel : 11	Period : 50000		OnTime : 37500	Start_Time : 3389647
-Channel : 12	Period : 40000		OnTime : 32000	Start_Time : 3389647
-Channel : 13	Period : 33333		OnTime : 28333	Start_Time : 3389647
-Channel : 14	Period : 25000		OnTime : 22500	Start_Time : 3389647
-Channel : 15	Period : 20000		OnTime : 19000	Start_Time : 3389647	
+[PWM] Frequency = 100000.00 , _count = 10
+Starting ITimer OK, micros() = 3295139
+Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 3295369
+Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 3295769
+Channel : 2	    Period : 333333		OnTime : 66666	Start_Time : 3296160
+Channel : 3	    Period : 250000		OnTime : 75000	Start_Time : 3296542
+Channel : 4	    Period : 200000		OnTime : 80000	Start_Time : 3296938
+Channel : 5	    Period : 166666		OnTime : 74999	Start_Time : 3297311
+Channel : 6	    Period : 142857		OnTime : 71428	Start_Time : 3297695
+Channel : 7	    Period : 125000		OnTime : 68750	Start_Time : 3298082
+Channel : 8	    Period : 111111		OnTime : 66666	Start_Time : 3298463
+Channel : 9	    Period : 100000		OnTime : 65000	Start_Time : 3298860
+Channel : 10	    Period : 66666		OnTime : 46666	Start_Time : 3299234
+Channel : 11	    Period : 50000		OnTime : 37500	Start_Time : 3299617
+Channel : 12	    Period : 40000		OnTime : 32000	Start_Time : 3300015
+Channel : 13	    Period : 33333		OnTime : 28333	Start_Time : 3300381
+Channel : 14	    Period : 25000		OnTime : 22500	Start_Time : 3300761
+Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 3301134
 ```
 
 ---
@@ -1085,26 +1132,26 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array_Simple on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.1.0
+Portenta_H7_Slow_PWM v1.2.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
-[PWM] Frequency = 1000000.00 , _count = 20
-Starting ITimer OK, micros() = 3190279
-Channel : 0	Period : 1000000		OnTime : 50000	Start_Time : 3190490
-Channel : 1	Period : 500000		OnTime : 50000	Start_Time : 3190490
-Channel : 2	Period : 333333		OnTime : 66666	Start_Time : 3190490
-Channel : 3	Period : 250000		OnTime : 75000	Start_Time : 3190490
-Channel : 4	Period : 200000		OnTime : 80000	Start_Time : 3190490
-Channel : 5	Period : 166666		OnTime : 74999	Start_Time : 3190490
-Channel : 6	Period : 142857		OnTime : 71428	Start_Time : 3190490
-Channel : 7	Period : 125000		OnTime : 68750	Start_Time : 3190490
-Channel : 8	Period : 111111		OnTime : 66666	Start_Time : 3190490
-Channel : 9	Period : 100000		OnTime : 65000	Start_Time : 3190490
-Channel : 10	Period : 66666		OnTime : 46666	Start_Time : 3190490
-Channel : 11	Period : 50000		OnTime : 37500	Start_Time : 3190490
-Channel : 12	Period : 40000		OnTime : 32000	Start_Time : 3190490
-Channel : 13	Period : 33333		OnTime : 28333	Start_Time : 3190490
-Channel : 14	Period : 25000		OnTime : 22500	Start_Time : 3190490
-Channel : 15	Period : 20000		OnTime : 19000	Start_Time : 3190490
+[PWM] Frequency = 50000.00 , _count = 20
+Starting ITimer OK, micros() = 2812174
+Channel : 0	    Period : 1000000		OnTime : 50000	Start_Time : 2812393
+Channel : 1	    Period : 500000		OnTime : 50000	Start_Time : 2812767
+Channel : 2	    Period : 333333		OnTime : 66666	Start_Time : 2813140
+Channel : 3	    Period : 250000		OnTime : 75000	Start_Time : 2813523
+Channel : 4	    Period : 200000		OnTime : 80000	Start_Time : 2813904
+Channel : 5	    Period : 166666		OnTime : 74999	Start_Time : 2814306
+Channel : 6	    Period : 142857		OnTime : 71428	Start_Time : 2814706
+Channel : 7	    Period : 125000		OnTime : 68750	Start_Time : 2815105
+Channel : 8	    Period : 111111		OnTime : 66666	Start_Time : 2815490
+Channel : 9	    Period : 100000		OnTime : 65000	Start_Time : 2815875
+Channel : 10	    Period : 66666		OnTime : 46666	Start_Time : 2816269
+Channel : 11	    Period : 50000		OnTime : 37500	Start_Time : 2816645
+Channel : 12	    Period : 40000		OnTime : 32000	Start_Time : 2817017
+Channel : 13	    Period : 33333		OnTime : 28333	Start_Time : 2817400
+Channel : 14	    Period : 25000		OnTime : 22500	Start_Time : 2817805
+Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 2818203
 ```
 
 ---
@@ -1115,14 +1162,14 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.1.0
+Portenta_H7_Slow_PWM v1.2.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
-[PWM] Frequency = 1000000.00 , _count = 10
-Starting ITimer OK, micros() = 2891680
-Using PWM Freq = 1.00, PWM DutyCycle = 10
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 2891942
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12823999
-Channel : 0	Period : 1000000		OnTime : 100000	Start_Time : 22757370
+[PWM] Frequency = 100000.00 , _count = 10
+Starting ITimer OK, micros() = 3493413
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 3493789
+Channel : 0	New Period : 500000		OnTime : 450000	Start_Time : 12493810
+Channel : 0	New Period : 1000000		OnTime : 500000	Start_Time : 22993850
 ```
 
 ---
@@ -1133,14 +1180,16 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on PORTENTA_H7_M7
-PORTENTA_H7_SLOW_PWM v1.1.0
+Portenta_H7_Slow_PWM v1.2.0
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
-[PWM] Frequency = 1000000.00 , _count = 10
-Starting ITimer OK, micros() = 2755082
-Using PWM Freq = 1.00, PWM DutyCycle = 50
-Channel : 0	Period : 1000000		OnTime : 500000	Start_Time : 2755333
-Using PWM Freq = 2.00, PWM DutyCycle = 90
-Channel : 0	Period : 500000		OnTime : 450000	Start_Time : 12685273
+[PWM] Frequency = 100000.00 , _count = 10
+Starting ITimer OK, micros() = 2709405
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 2709786
+Using PWM Freq = 2.00, PWM DutyCycle = 90.00
+Channel : 0	    Period : 500000		OnTime : 450000	Start_Time : 12619281
+Using PWM Freq = 1.00, PWM DutyCycle = 50.00
+Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 22529414
 ```
 
 ---
@@ -1186,6 +1235,10 @@ Submit issues to: [Portenta_H7_Slow_PWM issues](https://github.com/khoih-prog/Po
 1. Basic hardware multi-channel PWM for **Portenta_H7**.
 2. Add Table of Contents
 3. Add functions to modify PWM settings on-the-fly
+4. Fix `multiple-definitions` linker error
+5. Optimize library code by using `reference-passing` instead of `value-passing`
+6. Improve accuracy by using `float`, instead of `uint32_t` for `dutycycle`
+7. DutyCycle to be optionally updated at the end current PWM period instead of immediately.
 
 ---
 ---
