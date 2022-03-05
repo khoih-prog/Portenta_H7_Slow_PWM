@@ -12,13 +12,14 @@
   Therefore, their executions are not blocked by bad-behaving functions / tasks.
   This important feature is absolutely necessary for mission-critical tasks.
 
-  Version: 1.2.0
+  Version: 1.2.1
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K.Hoang      22/09/2021 Initial coding for Portenta_H7
   1.1.0   K Hoang      10/11/2021 Add functions to modify PWM settings on-the-fly
   1.2.0   K.Hoang      22/01/2022 Fix `multiple-definitions` linker error. Improve accuracy. Optimize code. Fix bug
+  1.2.1   K Hoang      04/03/2022 Fix `DutyCycle` and `New Period` display bugs. Display warning only when debug level > 3
 *****************************************************************************************************************************/
 
 #pragma once
@@ -27,17 +28,26 @@
 #define PORTENTA_H7_SLOW_PWM_ISR_GENERIC_HPP
 
 #if ( ( defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_PORTENTA_H7_M4) ) && defined(ARDUINO_ARCH_MBED) )
-  #warning Use MBED ARDUINO_PORTENTA_H7 and LittleFS
+
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Use MBED ARDUINO_PORTENTA_H7 and LittleFS
+  #endif
   
   #if defined(BOARD_NAME)
     #undef BOARD_NAME
   #endif
 
   #if defined(CORE_CM7)
-    #warning Using Portenta H7 M7 core
+    #if (_PWM_LOGLEVEL_ > 3)
+      #warning Using Portenta H7 M7 core
+    #endif
+      
     #define BOARD_NAME              "PORTENTA_H7_M7"
   #else
-    #warning Using Portenta H7 M4 core
+    #if (_PWM_LOGLEVEL_ > 3)
+      #warning Using Portenta H7 M4 core
+    #endif
+
     #define BOARD_NAME              "PORTENTA_H7_M4"
   #endif
   
@@ -46,13 +56,13 @@
 #endif
 
 #ifndef PORTENTA_H7_SLOW_PWM_VERSION
-  #define PORTENTA_H7_SLOW_PWM_VERSION            "Portenta_H7_Slow_PWM v1.2.0"
+  #define PORTENTA_H7_SLOW_PWM_VERSION            "Portenta_H7_Slow_PWM v1.2.1"
   
   #define PORTENTA_H7_SLOW_PWM_VERSION_MAJOR      1
   #define PORTENTA_H7_SLOW_PWM_VERSION_MINOR      2
-  #define PORTENTA_H7_SLOW_PWM_VERSION_PATCH      0
+  #define PORTENTA_H7_SLOW_PWM_VERSION_PATCH      1
 
-  #define PORTENTA_H7_SLOW_PWM_VERSION_INT        1002000  
+  #define PORTENTA_H7_SLOW_PWM_VERSION_INT        1002001
 #endif
 
 #ifndef _PWM_LOGLEVEL_
@@ -79,12 +89,19 @@ typedef void (*timer_callback)();
 typedef void (*timer_callback_p)(void *);
 
 #if !defined(USING_MICROS_RESOLUTION)
-  #warning Not USING_MICROS_RESOLUTION, using millis resolution
+
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Not USING_MICROS_RESOLUTION, using millis resolution
+  #endif
+    
   #define USING_MICROS_RESOLUTION       false
 #endif
 
 #if !defined(CHANGING_PWM_END_OF_CYCLE)
-  #warning Using default CHANGING_PWM_END_OF_CYCLE == true
+  #if (_PWM_LOGLEVEL_ > 3)
+    #warning Using default CHANGING_PWM_END_OF_CYCLE == true
+  #endif
+  
   #define CHANGING_PWM_END_OF_CYCLE     true
 #endif
 

@@ -15,7 +15,7 @@ If you don't find anything, please [open a new issue](https://github.com/khoih-p
 Please ensure to specify the following:
 
 * Arduino IDE version (e.g. 1.8.19) or Platform.io version
-* `ArduinoCore-mbed` Core Version (e.g. `ArduinoCore-mbed` mbed_portenta core v2.6.1)
+* `ArduinoCore-mbed` Core Version (e.g. `ArduinoCore-mbed` mbed_portenta core v2.7.2)
 * `Portenta_H7` Board type (e.g. Portenta_H7 Rev2 ABX00042, etc.)
 * Contextual information (e.g. what you were trying to achieve)
 * Simplest possible steps to reproduce
@@ -28,10 +28,10 @@ Please ensure to specify the following:
 
 ```
 Arduino IDE version: 1.8.19
-`ArduinoCore-mbed` mbed_portenta core v2.6.1
+`ArduinoCore-mbed` mbed_portenta core v2.7.2
 Portenta_H7 Rev2 ABX00042
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.4.0-97-generic #110-Ubuntu SMP Thu Jan 13 18:22:13 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+Linux xy-Inspiron-3593 5.4.0-100-generic #113-Ubuntu SMP Thu Feb 3 18:43:29 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
 I encountered a crash while using TimerInterrupt.

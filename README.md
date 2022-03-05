@@ -6,7 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/Portenta_H7_Slow_PWM.svg)](http://github.com/khoih-prog/Portenta_H7_Slow_PWM/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 ---
 ---
@@ -144,7 +145,7 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`ArduinoCore-mbed mbed_portenta core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+ 2. [`ArduinoCore-mbed mbed_portenta core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 
  3. To use with certain example
    - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) for [ISR_16_Timers_Array example](examples/ISR_16_Timers_Array).
@@ -171,7 +172,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**Portenta_H7_Slow_PWM** library](https://platformio.org/lib/show/12854/Portenta_H7_Slow_PWM) by using [Library Manager](https://platformio.org/lib/show/12854/Portenta_H7_Slow_PWM/installation). Search for **Portenta_H7_Slow_PWM** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**Portenta_H7_Slow_PWM** library](https://registry.platformio.org/libraries/khoih-prog/Portenta_H7_Slow_PWM) by using [Library Manager](https://registry.platformio.org/libraries/khoih-prog/Portenta_H7_Slow_PWM/installation). Search for **Portenta_H7_Slow_PWM** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
@@ -181,12 +182,12 @@ Another way to install is to:
 
 #### 1. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -199,9 +200,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.6.1. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 2.7.2. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -457,576 +458,9 @@ void setup()
 
 ### Example [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex)
 
-```
-#if !( ( defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_PORTENTA_H7_M4) ) && defined(ARDUINO_ARCH_MBED) )
-  #error This code is intended to run on the MBED ARDUINO_PORTENTA_H7 platform! Please check your Tools->Board setting. 
-#endif
+https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/6dee5efd24c5fc3293355d4f3a302f563645e9b7/examples/ISR_16_PWMs_Array_Complex/ISR_16_PWMs_Array_Complex.ino#L16-L583
 
-// These define's must be placed at the beginning before #include "ESP32_PWM.h"
-// _PWM_LOGLEVEL_ from 0 to 4
-// Don't define _PWM_LOGLEVEL_ > 0. Only for special ISR debugging only. Can hang the system.
-#define _PWM_LOGLEVEL_      4
 
-#define USING_MICROS_RESOLUTION       true    //false 
-
-// To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
-#include "Portenta_H7_Slow_PWM.h"
-
-#include <SimpleTimer.h>              // https://github.com/jfturcot/SimpleTimer
-
-#define LED_OFF             HIGH
-#define LED_ON              LOW
-
-#ifndef LED_BUILTIN
-  #define LED_BUILTIN       24    //LEDG               // Pin 24 control on-board LED_GREEN on Portenta_H7
-#endif
-
-#ifndef LED_BLUE
-  #define LED_BLUE          25    //LEDB               // Pin 25 control on-board LED_BLUE on Portenta_H7
-#endif
-
-#ifndef LED_RED
-  #define LED_RED           23   // LEDR              // Pin 23 control on-board LED_RED on Portenta_H7
-#endif
-
-#define HW_TIMER_INTERVAL_US      10L
-
-volatile uint64_t startMicros = 0;
-
-// Depending on the board, you can select STM32H7 Hardware Timer from TIM1-TIM22
-// If you select a Timer not correctly, you'll get a message from compiler
-// 'TIMxx' was not declared in this scope; did you mean 'TIMyy'? 
-
-// Portenta_H7 OK       : TIM1, TIM4, TIM7, TIM8, TIM12, TIM13, TIM14, TIM15, TIM16, TIM17
-// Portenta_H7 Not OK   : TIM2, TIM3, TIM5, TIM6, TIM18, TIM19, TIM20, TIM21, TIM22
-// Portenta_H7 No timer : TIM9, TIM10, TIM11. Only for STM32F2, STM32F4 and STM32L1 
-// Portenta_H7 No timer : TIM18, TIM19, TIM20, TIM21, TIM22
-
-// Init timer TIM16
-Portenta_H7_Timer ITimer(TIM16);
-
-// Init Portenta_H7_Slow_PWM
-Portenta_H7_Slow_PWM ISR_PWM;
-
-//////////////////////////////////////////////////////
-
-void TimerHandler()
-{
-  ISR_PWM.run();
-}
-
-/////////////////////////////////////////////////
-
-#define NUMBER_ISR_PWMS         16
-
-#define PIN_D0      D0
-#define PIN_D1      D1
-#define PIN_D2      D2
-#define PIN_D3      D3
-#define PIN_D4      D4
-#define PIN_D5      D5
-#define PIN_D6      D6
-#define PIN_D7      D7
-#define PIN_D8      D8
-#define PIN_D9      D9
-#define PIN_D10     D10
-#define PIN_D11     D11
-#define PIN_D12     D12
-
-typedef void (*irqCallback)  ();
-
-//////////////////////////////////////////////////////
-
-#define USE_COMPLEX_STRUCT      true
-
-#define USING_PWM_FREQUENCY     true
-
-//////////////////////////////////////////////////////
-
-#if USE_COMPLEX_STRUCT
-
-typedef struct
-{
-  uint32_t      PWM_Pin;
-  irqCallback   irqCallbackStartFunc;
-  irqCallback   irqCallbackStopFunc;
-
-#if USING_PWM_FREQUENCY  
-  float         PWM_Freq;
-#else  
-  uint32_t      PWM_Period;
-#endif
-  
-  float         PWM_DutyCycle;
-  
-  uint64_t      deltaMicrosStart;
-  uint64_t      previousMicrosStart;
-
-  uint64_t      deltaMicrosStop;
-  uint64_t      previousMicrosStop;
-  
-} ISR_PWM_Data;
-
-// In NRF52, avoid doing something fancy in ISR, for example Serial.print()
-// The pure simple Serial.prints here are just for demonstration and testing. Must be eliminate in working environment
-// Or you can get this run-time error / crash
-
-void doingSomethingStart(int index);
-
-void doingSomethingStop(int index);
-
-#else   // #if USE_COMPLEX_STRUCT
-
-volatile unsigned long deltaMicrosStart    [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStart [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-volatile unsigned long deltaMicrosStop     [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-volatile unsigned long previousMicrosStop  [] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-// You can assign pins here. Be carefull to select good pin to use or crash, e.g pin 6-11
-uint32_t PWM_Pin[] =
-{
-      LEDG,   LEDB,   LEDR, PIN_D0, PIN_D1,  PIN_D2,  PIN_D3,  PIN_D4,
-   PIN_D5,  PIN_D6, PIN_D7, PIN_D8, PIN_D9, PIN_D10, PIN_D11, PIN_D12
-};
-
-// You can assign any interval for any timer here, in microseconds
-uint32_t PWM_Period[] =
-{
-  1000000L,   500000L,   333333L,   250000L,   200000L,   166667L,   142857L,   125000L,
-   111111L,   100000L,    66667L,    50000L,    40000L,   33333L,     25000L,    20000L
-};
-
-// You can assign any interval for any timer here, in Hz
-float PWM_Freq[] =
-{
-  1.0f,  2.0f,  3.0f,  4.0f,  5.0f,  6.0f,  7.0f,  8.0f,
-  9.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 40.0f, 50.0f
-};
-
-// You can assign any interval for any timer here, in milliseconds
-float PWM_DutyCycle[] =
-{
-   5.0, 10.0, 20.0, 30.0, 40.0, 45.0, 50.0, 55.0,
-  60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0
-};
-
-void doingSomethingStart(int index)
-{
-  unsigned long currentMicros  = micros();
-
-  deltaMicrosStart[index]    = currentMicros - previousMicrosStart[index];
-  previousMicrosStart[index] = currentMicros;
-}
-
-void doingSomethingStop(int index)
-{
-  unsigned long currentMicros  = micros();
-
-  // Count from start to stop PWM pulse
-  deltaMicrosStop[index]    = currentMicros - previousMicrosStart[index];
-  previousMicrosStop[index] = currentMicros;
-}
-
-#endif    // #if USE_COMPLEX_STRUCT
-
-////////////////////////////////////
-// Shared
-////////////////////////////////////
-
-void doingSomethingStart0()
-{
-  doingSomethingStart(0);
-}
-
-void doingSomethingStart1()
-{
-  doingSomethingStart(1);
-}
-
-void doingSomethingStart2()
-{
-  doingSomethingStart(2);
-}
-
-void doingSomethingStart3()
-{
-  doingSomethingStart(3);
-}
-
-void doingSomethingStart4()
-{
-  doingSomethingStart(4);
-}
-
-void doingSomethingStart5()
-{
-  doingSomethingStart(5);
-}
-
-void doingSomethingStart6()
-{
-  doingSomethingStart(6);
-}
-
-void doingSomethingStart7()
-{
-  doingSomethingStart(7);
-}
-
-void doingSomethingStart8()
-{
-  doingSomethingStart(8);
-}
-
-void doingSomethingStart9()
-{
-  doingSomethingStart(9);
-}
-
-void doingSomethingStart10()
-{
-  doingSomethingStart(10);
-}
-
-void doingSomethingStart11()
-{
-  doingSomethingStart(11);
-}
-
-void doingSomethingStart12()
-{
-  doingSomethingStart(12);
-}
-
-void doingSomethingStart13()
-{
-  doingSomethingStart(13);
-}
-
-void doingSomethingStart14()
-{
-  doingSomethingStart(14);
-}
-
-void doingSomethingStart15()
-{
-  doingSomethingStart(15);
-}
-
-//////////////////////////////////////////////////////
-
-void doingSomethingStop0()
-{
-  doingSomethingStop(0);
-}
-
-void doingSomethingStop1()
-{
-  doingSomethingStop(1);
-}
-
-void doingSomethingStop2()
-{
-  doingSomethingStop(2);
-}
-
-void doingSomethingStop3()
-{
-  doingSomethingStop(3);
-}
-
-void doingSomethingStop4()
-{
-  doingSomethingStop(4);
-}
-
-void doingSomethingStop5()
-{
-  doingSomethingStop(5);
-}
-
-void doingSomethingStop6()
-{
-  doingSomethingStop(6);
-}
-
-void doingSomethingStop7()
-{
-  doingSomethingStop(7);
-}
-
-void doingSomethingStop8()
-{
-  doingSomethingStop(8);
-}
-
-void doingSomethingStop9()
-{
-  doingSomethingStop(9);
-}
-
-void doingSomethingStop10()
-{
-  doingSomethingStop(10);
-}
-
-void doingSomethingStop11()
-{
-  doingSomethingStop(11);
-}
-
-void doingSomethingStop12()
-{
-  doingSomethingStop(12);
-}
-
-void doingSomethingStop13()
-{
-  doingSomethingStop(13);
-}
-
-void doingSomethingStop14()
-{
-  doingSomethingStop(14);
-}
-
-void doingSomethingStop15()
-{
-  doingSomethingStop(15);
-}
-
-//////////////////////////////////////////////////////
-
-#if USE_COMPLEX_STRUCT
-
-  #if USING_PWM_FREQUENCY
-  
-  ISR_PWM_Data curISR_PWM_Data[] =
-  {
-    // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Freq, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LEDG,         doingSomethingStart0,    doingSomethingStop0,    1,   5, 0, 0, 0, 0 },
-    { LEDB,         doingSomethingStart1,    doingSomethingStop1,    2,  10, 0, 0, 0, 0 },
-    { LEDR,         doingSomethingStart2,    doingSomethingStop2,    3,  20, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,    doingSomethingStop3,    4,  30, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,    doingSomethingStop4,    5,  40, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,    doingSomethingStop5,    6,  45, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,    doingSomethingStop6,    7,  50, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,    doingSomethingStop7,    8,  55, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,    doingSomethingStop8,    9,  60, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,    doingSomethingStop9,   10,  65, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,   doingSomethingStop10,  15,  70, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,   doingSomethingStop11,  20,  75, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,   doingSomethingStop12,  25,  80, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,   doingSomethingStop13,  30,  85, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,   doingSomethingStop14,  40,  90, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,   doingSomethingStop15,  50,  95, 0, 0, 0, 0 }
-  };
-  
-  #else   // #if USING_PWM_FREQUENCY
-  
-  ISR_PWM_Data curISR_PWM_Data[] =
-  {
-    // pin, irqCallbackStartFunc, irqCallbackStopFunc, PWM_Period, PWM_DutyCycle, deltaMicrosStart, previousMicrosStart, deltaMicrosStop, previousMicrosStop
-    { LEDG,         doingSomethingStart0,     doingSomethingStop0,   1000000L,  5, 0, 0, 0, 0 },
-    { LEDB,         doingSomethingStart1,     doingSomethingStop1,    500000L, 10, 0, 0, 0, 0 },
-    { LEDR,         doingSomethingStart2,     doingSomethingStop2,    333333L, 20, 0, 0, 0, 0 },
-    { PIN_D0,       doingSomethingStart3,     doingSomethingStop3,    250000L, 30, 0, 0, 0, 0 },
-    { PIN_D1,       doingSomethingStart4,     doingSomethingStop4,    200000L, 40, 0, 0, 0, 0 },
-    { PIN_D2,       doingSomethingStart5,     doingSomethingStop5,    166667L, 45, 0, 0, 0, 0 },
-    { PIN_D3,       doingSomethingStart6,     doingSomethingStop6,    142857L, 50, 0, 0, 0, 0 },
-    { PIN_D4,       doingSomethingStart7,     doingSomethingStop7,    125000L, 55, 0, 0, 0, 0 },
-    { PIN_D5,       doingSomethingStart8,     doingSomethingStop8,    111111L, 60, 0, 0, 0, 0 },
-    { PIN_D6,       doingSomethingStart9,     doingSomethingStop9,    100000L, 65, 0, 0, 0, 0 },
-    { PIN_D7,       doingSomethingStart10,    doingSomethingStop10,    66667L, 70, 0, 0, 0, 0 },
-    { PIN_D8,       doingSomethingStart11,    doingSomethingStop11,    50000L, 75, 0, 0, 0, 0 },
-    { PIN_D9,       doingSomethingStart12,    doingSomethingStop12,    40000L, 80, 0, 0, 0, 0 },
-    { PIN_D10,      doingSomethingStart13,    doingSomethingStop13,    33333L, 85, 0, 0, 0, 0 },
-    { PIN_D11,      doingSomethingStart14,    doingSomethingStop14,    25000L, 90, 0, 0, 0, 0 },
-    { PIN_D12,      doingSomethingStart15,    doingSomethingStop15,    20000L, 95, 0, 0, 0, 0 }
-  };
-  
-  #endif  // #if USING_PWM_FREQUENCY
-
-void doingSomethingStart(int index)
-{
-  unsigned long currentMicros  = micros();
-
-  curISR_PWM_Data[index].deltaMicrosStart    = currentMicros - curISR_PWM_Data[index].previousMicrosStart;
-  curISR_PWM_Data[index].previousMicrosStart = currentMicros;
-}
-
-void doingSomethingStop(int index)
-{
-  unsigned long currentMicros  = micros();
-
-  //curISR_PWM_Data[index].deltaMicrosStop     = currentMicros - curISR_PWM_Data[index].previousMicrosStop;
-  // Count from start to stop PWM pulse
-  curISR_PWM_Data[index].deltaMicrosStop     = currentMicros - curISR_PWM_Data[index].previousMicrosStart;
-  curISR_PWM_Data[index].previousMicrosStop  = currentMicros;
-}
-
-#else   // #if USE_COMPLEX_STRUCT
-
-irqCallback irqCallbackStartFunc[] =
-{
-  doingSomethingStart0,  doingSomethingStart1,  doingSomethingStart2,  doingSomethingStart3,
-  doingSomethingStart4,  doingSomethingStart5,  doingSomethingStart6,  doingSomethingStart7,
-  doingSomethingStart8,  doingSomethingStart9,  doingSomethingStart10, doingSomethingStart11,
-  doingSomethingStart12, doingSomethingStart13, doingSomethingStart14, doingSomethingStart15
-};
-
-irqCallback irqCallbackStopFunc[] =
-{
-  doingSomethingStop0,  doingSomethingStop1,  doingSomethingStop2,  doingSomethingStop3,
-  doingSomethingStop4,  doingSomethingStop5,  doingSomethingStop6,  doingSomethingStop7,
-  doingSomethingStop8,  doingSomethingStop9,  doingSomethingStop10, doingSomethingStop11,
-  doingSomethingStop12, doingSomethingStop13, doingSomethingStop14, doingSomethingStop15
-};
-
-#endif    // #if USE_COMPLEX_STRUCT
-
-//////////////////////////////////////////////////////
-
-#define SIMPLE_TIMER_MS        2000L
-
-// Init SimpleTimer
-SimpleTimer simpleTimer;
-
-// Here is software Timer, you can do somewhat fancy stuffs without many issues.
-// But always avoid
-// 1. Long delay() it just doing nothing and pain-without-gain wasting CPU power.Plan and design your code / strategy ahead
-// 2. Very long "do", "while", "for" loops without predetermined exit time.
-void simpleTimerDoingSomething2s()
-{
-  static unsigned long previousMicrosStart = startMicros;
-
-  unsigned long currMicros = micros();
-
-  Serial.print(F("SimpleTimer (ms): ")); Serial.print(SIMPLE_TIMER_MS);
-  Serial.print(F(", us : ")); Serial.print(currMicros);
-  Serial.print(F(", Dus : ")); Serial.println(currMicros - previousMicrosStart);
-
-  for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
-  {
-#if USE_COMPLEX_STRUCT
-    Serial.print(F("PWM Channel : ")); Serial.print(i);
-    Serial.print(F(", programmed Period (us): "));
-
-  #if USING_PWM_FREQUENCY
-    Serial.print(1000000 / curISR_PWM_Data[i].PWM_Freq);
-  #else
-    Serial.print(curISR_PWM_Data[i].PWM_Period);
-  #endif
-    
-    Serial.print(F(", actual : ")); Serial.print(curISR_PWM_Data[i].deltaMicrosStart);
-    
-    Serial.print(F(", programmed DutyCycle : ")); 
-
-    Serial.print(curISR_PWM_Data[i].PWM_DutyCycle);
-    
-    Serial.print(F(", actual : ")); Serial.println((float) curISR_PWM_Data[i].deltaMicrosStop * 100.0f / curISR_PWM_Data[i].deltaMicrosStart);
-    
-#else
-
-    Serial.print(F("PWM Channel : ")); Serial.print(i);
-    
-  #if USING_PWM_FREQUENCY
-    Serial.print(1000000 / PWM_Freq[i]);
-  #else
-    Serial.print(PWM_Period[i]);
-  #endif
-  
-    Serial.print(F(", programmed Period (us): ")); Serial.print(PWM_Period[i]);
-    Serial.print(F(", actual : ")); Serial.print(deltaMicrosStart[i]);
-
-    Serial.print(F(", programmed DutyCycle : ")); 
-  
-    Serial.print(PWM_DutyCycle[i]);
-      
-    Serial.print(F(", actual : ")); Serial.println( (float) deltaMicrosStop[i] * 100.0f / deltaMicrosStart[i]);
-#endif
-  }
-
-  previousMicrosStart = currMicros;
-}
-
-void setup()
-{
-  Serial.begin(115200);
-  while (!Serial);
-
-  delay(2000);
-
-  Serial.print(F("\nStarting ISR_16_PWMs_Array_Complex on ")); Serial.println(BOARD_NAME);
-  Serial.println(PORTENTA_H7_SLOW_PWM_VERSION);
-
-  // Interval in microsecs
-  if (ITimer.attachInterruptInterval(HW_TIMER_INTERVAL_US, TimerHandler))
-  {
-    startMicros = micros();
-    Serial.print(F("Starting ITimer OK, micros() = ")); Serial.println(startMicros);
-  }
-  else
-    Serial.println(F("Can't set ITimer. Select another freq. or timer"));
-
-  startMicros = micros();
-
-  // Just to demonstrate, don't use too many ISR Timers if not absolutely necessary
-  // You can use up to 16 timer for each ISR_PWM
-  
-  for (uint16_t i = 0; i < NUMBER_ISR_PWMS; i++)
-  {
-#if USE_COMPLEX_STRUCT
-    curISR_PWM_Data[i].previousMicrosStart = startMicros;
-    //ISR_PWM.setInterval(curISR_PWM_Data[i].PWM_Period, curISR_PWM_Data[i].irqCallbackStartFunc);
-
-    //void setPWM(uint32_t pin, float frequency, float dutycycle
-    // , timer_callback_p StartCallback = nullptr, timer_callback_p StopCallback = nullptr)
-
-  #if USING_PWM_FREQUENCY
-    // You can use this with PWM_Freq in Hz
-    ISR_PWM.setPWM(curISR_PWM_Data[i].PWM_Pin, curISR_PWM_Data[i].PWM_Freq, curISR_PWM_Data[i].PWM_DutyCycle, 
-                   curISR_PWM_Data[i].irqCallbackStartFunc, curISR_PWM_Data[i].irqCallbackStopFunc);
-  #else
-    // Or You can use this with PWM_Period in us
-    ISR_PWM.setPWM_Period(curISR_PWM_Data[i].PWM_Pin, curISR_PWM_Data[i].PWM_Period, curISR_PWM_Data[i].PWM_DutyCycle, 
-                          curISR_PWM_Data[i].irqCallbackStartFunc, curISR_PWM_Data[i].irqCallbackStopFunc);
-  #endif
-  
-#else
-    previousMicrosStart[i] = micros();
-    
-  #if USING_PWM_FREQUENCY
-    // You can use this with PWM_Freq in Hz
-    ISR_PWM.setPWM(PWM_Pin[i], PWM_Freq[i], PWM_DutyCycle[i], irqCallbackStartFunc[i], irqCallbackStopFunc[i]);
-  #else
-    // Or You can use this with PWM_Period in us
-    ISR_PWM.setPWM_Period(PWM_Pin[i], PWM_Period[i], PWM_DutyCycle[i], irqCallbackStartFunc[i], irqCallbackStopFunc[i]);
-  #endif 
-   
-#endif
-  }
-
-  // You need this timer for non-critical tasks. Avoid abusing ISR if not absolutely necessary.
-  simpleTimer.setInterval(SIMPLE_TIMER_MS, simpleTimerDoingSomething2s);
-}
-
-#define BLOCKING_TIME_MS      10000L
-
-void loop()
-{
-  // This unadvised blocking task is used to demonstrate the blocking effects onto the execution and accuracy to Software timer
-  // You see the time elapse of ISR_PWM still accurate, whereas very unaccurate for Software Timer
-  // The time elapse for 2000ms software timer now becomes 3000ms (BLOCKING_TIME_MS)
-  // While that of ISR_PWM is still prefect.
-  delay(BLOCKING_TIME_MS);
-
-  // You need this Software timer for non-critical tasks. Avoid abusing ISR if not absolutely necessary
-  // You don't need to and never call ISR_PWM.run() here in the loop(). It's already handled by ISR timer.
-  simpleTimer.run();
-}
-```
 ---
 ---
 
@@ -1039,7 +473,7 @@ The following is the sample terminal output when running example [ISR_16_PWMs_Ar
 
 ```
 Starting ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7
-Portenta_H7_Slow_PWM v1.2.0
+Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 100000.00 , _count = 10
 Starting ITimer OK, micros() = 2892390
@@ -1103,7 +537,7 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array on PORTENTA_H7_M7
-Portenta_H7_Slow_PWM v1.2.0
+Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 100000.00 , _count = 10
 Starting ITimer OK, micros() = 3295139
@@ -1133,7 +567,7 @@ The following is the sample terminal output when running example [**ISR_16_PWMs_
 
 ```
 Starting ISR_16_PWMs_Array_Simple on PORTENTA_H7_M7
-Portenta_H7_Slow_PWM v1.2.0
+Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 50000.00 , _count = 20
 Starting ITimer OK, micros() = 2812174
@@ -1163,14 +597,31 @@ The following is the sample terminal output when running example [ISR_Modify_PWM
 
 ```
 Starting ISR_Modify_PWM on PORTENTA_H7_M7
-Portenta_H7_Slow_PWM v1.2.0
+Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 100000.00 , _count = 10
-Starting ITimer OK, micros() = 3493413
-Using PWM Freq = 1.00, PWM DutyCycle = 50.00
-Channel : 0	    Period : 1000000		OnTime : 500000	Start_Time : 3493789
-Channel : 0	New Period : 500000		OnTime : 450000	Start_Time : 12493810
-Channel : 0	New Period : 1000000		OnTime : 500000	Start_Time : 22993850
+Starting ITimer OK, micros() = 2958039
+Using PWM Freq = 200.00, PWM DutyCycle = 1.00
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 2958421
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 12880966
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 22807296
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 32739837
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 42666176
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 52598456
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 62524686
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 72452156
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 82378396
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 92310926
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 102237196
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 112169696
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 122095816
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 132028196
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 141954256
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 151881576
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 161807886
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 171740326
+Channel : 0	    Period : 5000		OnTime : 50	Start_Time : 181666346
+Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 191598416
 ```
 
 ---
@@ -1181,7 +632,7 @@ The following is the sample terminal output when running example [ISR_Changing_P
 
 ```
 Starting ISR_Changing_PWM on PORTENTA_H7_M7
-Portenta_H7_Slow_PWM v1.2.0
+Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
 [PWM] Frequency = 100000.00 , _count = 10
 Starting ITimer OK, micros() = 2709405
@@ -1240,6 +691,8 @@ Submit issues to: [Portenta_H7_Slow_PWM issues](https://github.com/khoih-prog/Po
 5. Optimize library code by using `reference-passing` instead of `value-passing`
 6. Improve accuracy by using `float`, instead of `uint32_t` for `dutycycle`
 7. DutyCycle to be optionally updated at the end current PWM period instead of immediately.
+8. Display informational warning only when `_PWM_LOGLEVEL_` > 3
+
 
 ---
 ---
