@@ -14,8 +14,8 @@
   #error This code is intended to run on the MBED ARDUINO_PORTENTA_H7 platform! Please check your Tools->Board setting. 
 #endif
 
-#define PORTENTA_H7_SLOW_PWM_VERSION_MIN_TARGET      "Portenta_H7_Slow_PWM v1.2.0"
-#define PORTENTA_H7_SLOW_PWM_VERSION_MIN             1002000
+#define PORTENTA_H7_SLOW_PWM_VERSION_MIN_TARGET      "Portenta_H7_Slow_PWM v1.2.1"
+#define PORTENTA_H7_SLOW_PWM_VERSION_MIN             1002001
 
 #include "multiFileProject.h"
 
