@@ -2,12 +2,15 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/Portenta_H7_Slow_PWM.svg?)](https://www.ardu-badge.com/Portenta_H7_Slow_PWM)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/Portenta_H7_Slow_PWM.svg)](https://github.com/khoih-prog/Portenta_H7_Slow_PWM/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/main/LICENSE)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/Portenta_H7_Slow_PWM.svg)](http://github.com/khoih-prog/Portenta_H7_Slow_PWM/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-Portenta_H7_Slow_PWM/count.svg" title="Portenta_H7_Slow_PWM Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-Portenta_H7_Slow_PWM/count.svg" style="height: 30px;width: 200px;"></a>
 
 ---
 ---
@@ -72,7 +75,7 @@ As more complex calculation and check **inside ISR** are introduced from v1.2.0,
 You can modify to use larger `HW_TIMER_INTERVAL_US`, (from current 10uS), according to your board and use-case if crash happens.
 
 
-```
+```cpp
 // Don't change these numbers to make higher Timer freq. System can hang
 #define HW_TIMER_INTERVAL_US      10L
 ```
@@ -103,7 +106,7 @@ Being ISR-based PWM, their executions are not blocked by bad-behaving functions 
 This non-being-blocked important feature is absolutely necessary for mission-critical tasks.
 
 You'll see `software-based` SimpleTimer is blocked while system is connecting to WiFi / Internet / Blynk, as well as by blocking task 
-in loop(), using delay() function as an example. The elapsed time then is very unaccurate
+in `loop()`, using `delay()` function as an example. The elapsed time then is very unaccurate
 
 ---
 
@@ -145,7 +148,7 @@ The catch is **your function is now part of an ISR (Interrupt Service Routine), 
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`ArduinoCore-mbed mbed_portenta core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+ 2. [`ArduinoCore-mbed mbed_portenta core 3.4.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino **Portenta_H7** boards, such as **Portenta_H7 Rev2 ABX00042, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
 
  3. To use with certain example
    - [`SimpleTimer library`](https://github.com/jfturcot/SimpleTimer) for [ISR_16_Timers_Array example](examples/ISR_16_Timers_Array).
@@ -164,9 +167,9 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 Another way to install is to:
 
 1. Navigate to [**Portenta_H7_Slow_PWM**](https://github.com/khoih-prog/Portenta_H7_Slow_PWM) page.
-2. Download the latest release `Portenta_H7_Slow_PWM-master.zip`.
-3. Extract the zip file to `Portenta_H7_Slow_PWM-master` directory 
-4. Copy whole `Portenta_H7_Slow_PWM-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+2. Download the latest release `Portenta_H7_Slow_PWM-main.zip`.
+3. Extract the zip file to `Portenta_H7_Slow_PWM-main` directory 
+4. Copy whole `Portenta_H7_Slow_PWM-main` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO
 
@@ -182,12 +185,12 @@ Another way to install is to:
 
 #### 1. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/3.4.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/3.4.1/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/3.4.1
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -200,9 +203,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.7.2. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 3.4.1. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/3.4.1/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -220,14 +223,14 @@ The current library implementation, using `xyz-Impl.h` instead of standard `xyz.
 
 You can include this `.hpp` file
 
-```
+```cpp
 // Can be included as many times as necessary, without `Multiple Definitions` Linker Error
 #include "Portenta_H7_Slow_PWM.hpp"     //https://github.com/khoih-prog/Portenta_H7_Slow_PWM
 ```
 
 in many files. But be sure to use the following `.h` file **in just 1 `.h`, `.cpp` or `.ino` file**, which must **not be included in any other file**, to avoid `Multiple Definitions` Linker Error
 
-```
+```cpp
 // To be included only in main(), .ino with setup() to avoid `Multiple Definitions` Linker Error
 #include "Portenta_H7_Slow_PWM.h"           //https://github.com/khoih-prog/Portenta_H7_Slow_PWM
 ```
@@ -267,7 +270,7 @@ To be sure which Timer is available for the board you're using, check the Core P
 
 The information will be as follows:
 
-```
+```cpp
 typedef struct
 {
   __IO uint32_t CR1;         /*!< TIM control register 1,                   Address offset: 0x00 */
@@ -302,7 +305,7 @@ typedef struct
 
 and
 
-```
+```cpp
 #define PERIPH_BASE            0x40000000UL /*!< Base address of : AHB/ABP Peripherals   
 /*!< Peripheral memory map */
 #define APB1PERIPH_BASE        PERIPH_BASE
@@ -399,7 +402,7 @@ Before using any Timer for a PWM channel, you have to make sure the Timer has no
 
 #### 1.1 Init Hardware Timer
 
-```
+```cpp
 // Depending on the board, you can select STM32H7 Hardware Timer from TIM1-TIM22
 // If you select a Timer not correctly, you'll get a message from compiler
 // 'TIMxx' was not declared in this scope; did you mean 'TIMyy'? 
@@ -418,7 +421,7 @@ Portenta_H7_Slow_PWM ISR_PWM;
 
 #### 1.2 Set PWM Frequency, dutycycle, attach irqCallbackStartFunc and irqCallbackStopFunc functions
 
-```
+```cpp
 void irqCallbackStartFunc()
 {
 
@@ -471,7 +474,7 @@ https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/6dee5efd24c5fc3293355d4f
 The following is the sample terminal output when running example [ISR_16_PWMs_Array_Complex](examples/ISR_16_PWMs_Array_Complex) to demonstrate how to use multiple PWM channels with complex callback functions, the accuracy of ISR Hardware PWM-channels, **especially when system is very busy**.  The ISR PWM-channels is **running exactly according to corresponding programmed periods and duty-cycles**
 
 
-```
+```cpp
 Starting ISR_16_PWMs_Array_Complex on PORTENTA_H7_M7
 Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
@@ -535,7 +538,7 @@ PWM Channel : 15, programmed Period (us): 20000.00, actual : 20000, programmed D
 
 The following is the sample terminal output when running example [**ISR_16_PWMs_Array**](examples/ISR_16_PWMs_Array) on **Portenta_H7** to demonstrate how to use multiple PWM channels with simple callback functions.
 
-```
+```cpp
 Starting ISR_16_PWMs_Array on PORTENTA_H7_M7
 Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
@@ -565,7 +568,7 @@ Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 3301134
 
 The following is the sample terminal output when running example [**ISR_16_PWMs_Array_Simple**](examples/ISR_16_PWMs_Array_Simple) on **Portenta_H7** to demonstrate how to use multiple PWM channels.
 
-```
+```cpp
 Starting ISR_16_PWMs_Array_Simple on PORTENTA_H7_M7
 Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
@@ -595,7 +598,7 @@ Channel : 15	    Period : 20000		OnTime : 19000	Start_Time : 2818203
 
 The following is the sample terminal output when running example [ISR_Modify_PWM](examples/ISR_Modify_PWM) on **PORTENTA_H7_M7** to demonstrate how to modify PWM settings on-the-fly without deleting the PWM channel
 
-```
+```cpp
 Starting ISR_Modify_PWM on PORTENTA_H7_M7
 Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
@@ -630,7 +633,7 @@ Channel : 0	    Period : 10000		OnTime : 555	Start_Time : 191598416
 
 The following is the sample terminal output when running example [ISR_Changing_PWM](examples/ISR_Changing_PWM) on **PORTENTA_H7_M7** to demonstrate how to modify PWM settings on-the-fly by deleting the PWM channel and reinit the PWM channel
 
-```
+```cpp
 Starting ISR_Changing_PWM on PORTENTA_H7_M7
 Portenta_H7_Slow_PWM v1.2.1
 [PWM] Portenta_H7_TimerInterrupt: Timer Input Freq (Hz) = 200000000
@@ -716,12 +719,12 @@ If you want to contribute to this project:
 
 ### License
 
-- The library is licensed under [MIT](https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/master/LICENSE)
+- The library is licensed under [MIT](https://github.com/khoih-prog/Portenta_H7_Slow_PWM/blob/main/LICENSE)
 
 ---
 
 ## Copyright
 
-Copyright 2021- Khoi Hoang
+Copyright (c) 2021- Khoi Hoang
 
 
